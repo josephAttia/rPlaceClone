@@ -26,7 +26,12 @@
 
 
 
+
 <canvas id="placeCanvas" width="500" height="500" style="border:1px solid #000000;"></canvas>
+
+<div id="timer" style="margin-left: 700px;">
+</div>
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js"
@@ -35,10 +40,14 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" referrerpolicy="no-referrer"></script>
 
+
 <script>
+
+
     var socket = io();
     var canvas = document.getElementById('placeCanvas');
     var ctx = canvas.getContext('2d');
+
 
     var width = 10;
     var height = 10;
@@ -64,21 +73,60 @@
         }
     }
 
+    var timeLeft = 30;
+    var elem = document.getElementById('timer');
+
+    var timerId = setInterval(countdown, 1000);
+
+    function countdown() {
+        if (timeLeft == -1) {
+            clearTimeout(timerId);
+
+        } else {
+            elem.innerHTML = timeLeft + ' seconds remaining';
+            timeLeft--;
+        }
+    }
+
+
     //if one sqaaure in the grid is clicked, change its color
     canvas.addEventListener('click', function (e) {
-        var x = Math.floor(e.offsetX / width);
-        var y = Math.floor(e.offsetY / height);
-        grid[x][y] = currentColor;
-        ctx.fillStyle = currentColor;
-        ctx.fillRect(x * width, y * height, width, height);
-        socket.emit('gridStatus', grid);
+        socket.emit('checkPlacementAllowance', timeLeft);
     });
+
+    socket.emit('gridStatus', grid);
 
 
     socket.on('newGrid', function (newGrid) {
         console.log("recived new grid");
         grid = newGrid;
         drawGrid(newGrid);
+    });
+
+    socket.on('allowPlacement', function (x) {
+        if (x == true) {
+            console.log("allow placement");
+            canvas.addEventListener('click', function (e) {
+                var x = Math.floor(e.offsetX / width);
+                var y = Math.floor(e.offsetY / height);
+                grid[x][y] = currentColor;
+                ctx.fillStyle = currentColor;
+                ctx.fillRect(x * width, y * height, width, height);
+                socket.emit('gridStatus', grid);
+            });
+        }
+        else {
+            console.log("disallow placement");
+            canvas.removeEventListener('click', function (e) {
+                $(".notify").toggleClass("active");
+                $("#notifyType").toggleClass("success");
+
+                setTimeout(function () {
+                    $(".notify").removeClass("active");
+                    $("#notifyType").removeClass("success");
+                }, 2000);
+            });
+        }
     });
 
     $('#sidenav').find('a').each(function () {
