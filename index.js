@@ -9,9 +9,10 @@ admin.initializeApp({
 
 var db = admin.database();
 var ref = db.ref("/");
-
-ref.once("value", function (snapshot) {
-  var data = snapshot.val();   //Data is in JSON format.
+var currentGirdStatus;
+// print all the data from the database
+ref.once("value", function(snapshot) {
+    currentGirdStatus = snapshot.val();
 });
 
 
@@ -27,24 +28,22 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+
+  socket.on('userJoined', () => {
+    socket.emit('serveGrid', currentGirdStatus);
+  });
+
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 
+
   socket.on('gridStatus', (grid) => {
+    currentGirdStatus = grid;
     socket.broadcast.emit('newGrid', grid);
     ref.set(grid);
   });
 
-  socket.on('checkPlacementAllowance', (data) => {
-    if(data.timeLeft == 0 || data.timeLeft < -1) {
-      socket.emit('allowPlacement', true);
-    }
-    else {
-      socket.emit('allowPlacement', false);
-    }
-  });
 });
 
 server.listen(3000, () => {

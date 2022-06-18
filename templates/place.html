@@ -4,6 +4,8 @@
 <div id="sidenav">
     <h1 style="color: white;">Colors</h1>
     <br>
+    <a class="fff" id="colorOption"></a>
+    <br>
     <a class="e4e4e4" id="colorOption"></a>
     <br>
     <a class="888888" id="colorOption"></a>
@@ -17,7 +19,8 @@
     <a class="A06A42" id="colorOption"></a>
     <br>
     <a class="E5D900" id="colorOption"></a>
-
+    <br>
+    <a class="000" id="colorOption"></a>
 </div>
 
 
@@ -47,12 +50,17 @@
     var socket = io();
     var canvas = document.getElementById('placeCanvas');
     var ctx = canvas.getContext('2d');
-
-
     var width = 10;
     var height = 10;
     var currentColor = "#000000";
     var size = 50;
+
+  
+
+    // on window load alert the user to the current color
+    window.onload = function () {
+        socket.emit('userJoined')
+    }
 
     //draw a grid where each square's color can be changed
     var grid = [];
@@ -73,28 +81,10 @@
         }
     }
 
-    var timeLeft = 30;
-    var elem = document.getElementById('timer');
-
-    var timerId = setInterval(countdown, 1000);
-
-    function countdown() {
-        if (timeLeft == -1) {
-            clearTimeout(timerId);
-
-        } else {
-            elem.innerHTML = timeLeft + ' seconds remaining';
-            timeLeft--;
-        }
-    }
-
-
-    //if one sqaaure in the grid is clicked, change its color
-    canvas.addEventListener('click', function (e) {
-        socket.emit('checkPlacementAllowance', timeLeft);
+    socket.on('serveGrid', function (grid) {
+        console.log(grid);
+        drawGrid(grid);
     });
-
-    socket.emit('gridStatus', grid);
 
 
     socket.on('newGrid', function (newGrid) {
@@ -103,31 +93,15 @@
         drawGrid(newGrid);
     });
 
-    socket.on('allowPlacement', function (x) {
-        if (x == true) {
-            console.log("allow placement");
-            canvas.addEventListener('click', function (e) {
-                var x = Math.floor(e.offsetX / width);
-                var y = Math.floor(e.offsetY / height);
-                grid[x][y] = currentColor;
-                ctx.fillStyle = currentColor;
-                ctx.fillRect(x * width, y * height, width, height);
-                socket.emit('gridStatus', grid);
-            });
-        }
-        else {
-            console.log("disallow placement");
-            canvas.removeEventListener('click', function (e) {
-                $(".notify").toggleClass("active");
-                $("#notifyType").toggleClass("success");
-
-                setTimeout(function () {
-                    $(".notify").removeClass("active");
-                    $("#notifyType").removeClass("success");
-                }, 2000);
-            });
-        }
+    canvas.addEventListener('click', function (e) {
+        var x = Math.floor(e.offsetX / width);
+        var y = Math.floor(e.offsetY / height);
+        grid[x][y] = currentColor;
+        ctx.fillStyle = currentColor;
+        ctx.fillRect(x * width, y * height, width, height);
+        socket.emit('gridStatus', grid);
     });
+
 
     $('#sidenav').find('a').each(function () {
         var innerDivId = $(this).attr('class');
@@ -145,11 +119,12 @@
 
     });
 
-
-
 </script>
 
 <style>
+    *{
+        overflow: hidden;
+    }
     h1 {
         text-align: center;
     }
@@ -218,6 +193,7 @@
 
     .active {
         height: 50px;
+        overflow: hidden;
     }
 
     .success:before {
