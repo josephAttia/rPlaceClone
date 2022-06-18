@@ -55,12 +55,9 @@
     var currentColor = "#000000";
     var size = 50;
 
-  
 
-    // on window load alert the user to the current color
-    window.onload = function () {
-        socket.emit('userJoined')
-    }
+
+
 
     //draw a grid where each square's color can be changed
     var grid = [];
@@ -81,9 +78,14 @@
         }
     }
 
-    socket.on('serveGrid', function (grid) {
-        console.log(grid);
-        drawGrid(grid);
+    // on window load alert the user to the current color
+    window.onload = function () {
+        socket.emit('userJoined')
+    }
+
+    socket.on('serveGrid', function (newGrid) {
+        grid = newGrid;
+        drawGrid(newGrid);
     });
 
 
@@ -122,9 +124,10 @@
 </script>
 
 <style>
-    *{
+    * {
         overflow: hidden;
     }
+
     h1 {
         text-align: center;
     }
