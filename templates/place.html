@@ -57,7 +57,87 @@
 
 <script>
 
-var _0x36fd51=_0x5c48;function _0x48f0(){var _0x34a2af=['getElementById','9823376CpGnMa','placeCanvas','7629860zFlFFx','bind','floor','5UheNWb','recived\x20new\x20grid','newGrid','background:\x20#','#fff','gridStatus','fillRect','success','2529220FsmiQe','fillStyle','offsetX','.notify','active','serveGrid','getContext','https://fierce-woodland-41082.herokuapp.com/','1949760vMLVuz','emit','978212NPIjsI','669274OpWtbP','removeClass','style','attr','#notifyType','userJoined','class','toggleClass','3ImeKml','6954222XDBlHf','99ATANkm','#000000'];_0x48f0=function(){return _0x34a2af;};return _0x48f0();}(function(_0x70bed4,_0x3fdae0){var _0x4e04ea=_0x5c48,_0x44bf5a=_0x70bed4();while(!![]){try{var _0x4c49a5=-parseInt(_0x4e04ea(0xa3))/0x1+-parseInt(_0x4e04ea(0xa4))/0x2*(-parseInt(_0x4e04ea(0xac))/0x3)+-parseInt(_0x4e04ea(0xa1))/0x4+parseInt(_0x4e04ea(0x91))/0x5*(-parseInt(_0x4e04ea(0xad))/0x6)+-parseInt(_0x4e04ea(0x8e))/0x7+parseInt(_0x4e04ea(0x8c))/0x8+-parseInt(_0x4e04ea(0xae))/0x9*(-parseInt(_0x4e04ea(0x99))/0xa);if(_0x4c49a5===_0x3fdae0)break;else _0x44bf5a['push'](_0x44bf5a['shift']());}catch(_0x3e0c7d){_0x44bf5a['push'](_0x44bf5a['shift']());}}}(_0x48f0,0x99d10));var socket=io(_0x36fd51(0xa0)),canvas=document[_0x36fd51(0x8b)](_0x36fd51(0x8d)),ctx=canvas[_0x36fd51(0x9f)]('2d'),width=0xa,height=0xa,currentColor=_0x36fd51(0xaf),size=0x32,grid=[];for(var i=0x0;i<size;i++){grid[i]=[];for(var j=0x0;j<size;j++){grid[i][j]=_0x36fd51(0x95);}}function drawGrid(_0x543e73){var _0x3689a4=_0x36fd51;for(var _0x1d434a=0x0;_0x1d434a<size;_0x1d434a++){for(var _0x28df8f=0x0;_0x28df8f<size;_0x28df8f++){ctx[_0x3689a4(0x9a)]=_0x543e73[_0x1d434a][_0x28df8f],ctx[_0x3689a4(0x97)](_0x1d434a*width,_0x28df8f*height,width,height);}}}function _0x5c48(_0x394568,_0x346609){var _0x48f0e5=_0x48f0();return _0x5c48=function(_0x5c48b0,_0x34446d){_0x5c48b0=_0x5c48b0-0x8b;var _0x13e078=_0x48f0e5[_0x5c48b0];return _0x13e078;},_0x5c48(_0x394568,_0x346609);}window['onload']=function(){var _0xbddb09=_0x36fd51;socket[_0xbddb09(0xa2)](_0xbddb09(0xa9));},socket['on'](_0x36fd51(0x9e),function(_0x435884){grid=_0x435884,drawGrid(_0x435884);}),socket['on'](_0x36fd51(0x93),function(_0x4244b5){var _0x52c0f4=_0x36fd51;console['log'](_0x52c0f4(0x92)),grid=_0x4244b5,drawGrid(_0x4244b5);}),canvas['addEventListener']('click',function(_0x3e3e85){var _0x5807dc=_0x36fd51,_0x11128a=Math[_0x5807dc(0x90)](_0x3e3e85[_0x5807dc(0x9b)]/width),_0x583417=Math[_0x5807dc(0x90)](_0x3e3e85['offsetY']/height);grid[_0x11128a][_0x583417]=currentColor,ctx['fillStyle']=currentColor,ctx[_0x5807dc(0x97)](_0x11128a*width,_0x583417*height,width,height),socket['emit'](_0x5807dc(0x96),grid);}),$('#sidenav')['find']('a')['each'](function(){var _0x312ee2=_0x36fd51,_0x13eb84=$(this)[_0x312ee2(0xa7)](_0x312ee2(0xaa));$(this)['attr'](_0x312ee2(0xa6),_0x312ee2(0x94)+_0x13eb84+';'),$(this)[_0x312ee2(0x8f)]('click',function(){var _0x43623f=_0x312ee2;currentColor='#'+_0x13eb84,$('.notify')[_0x43623f(0xab)](_0x43623f(0x9d)),$(_0x43623f(0xa8))['toggleClass']('success'),setTimeout(function(){var _0x11048f=_0x43623f;$(_0x11048f(0x9c))['removeClass']('active'),$('#notifyType')[_0x11048f(0xa5)](_0x11048f(0x98));},0x7d0);});});
+// var socket = io("https://fierce-woodland-41082.herokuapp.com/");
+    var socket = io();
+    var canvas = document.getElementById('placeCanvas');
+    var ctx = canvas.getContext('2d');
+    var width = 10;
+    var height = 10;
+    var currentColor = "#000000";
+    var size = 50;
+
+    //draw a grid where each square's color can be changed
+    var grid = [];
+    for (var i = 0; i < size; i++) {
+        grid[i] = [];
+        for (var j = 0; j < size; j++) {
+            grid[i][j] = '#fff';
+        }
+    }
+
+    //draw the grid
+    function drawGrid(grid) {
+        for (var i = 0; i < size; i++) {
+            for (var j = 0; j < size; j++) {
+                ctx.fillStyle = grid[i][j];
+                ctx.fillRect(i * width, j * height, width, height);
+            }
+        }
+    }
+
+    // on window load alert the user to the current color
+    window.onload = function () {
+        socket.emit('userJoined')
+    }
+
+    socket.on('serveGrid', function (newGrid) {
+        grid = newGrid;
+        drawGrid(newGrid);
+    });
+
+
+    socket.on('newGrid', function (newGrid) {
+        grid[newGrid.x][newGrid.y] = newGrid.color;
+        drawGrid(grid);
+    });
+
+    canvas.addEventListener('click', function (e) {
+        var x = Math.floor(e.offsetX / width);
+        var y = Math.floor(e.offsetY / height);
+        grid[x][y] = currentColor;
+        ctx.fillStyle = currentColor;
+        ctx.fillRect(x * width, y * height, width, height);
+        //loop throught the grid
+        for (var i = 0; i < size; i++) {
+            for (var j = 0; j < size; j++) {
+                if(grid[i][j] !== "#fff"){
+                    socket.emit('gridStatus', {
+                        wholeGrid: grid,
+                        x: i,
+                        y: j,
+                        color: grid[i][j]
+                    });
+                }
+            }
+        }
+    });
+
+
+    $('#sidenav').find('a').each(function () {
+        var innerDivId = $(this).attr('class');
+        $(this).attr('style', 'background: #' + innerDivId + ';');
+        $(this).bind('click', function () {
+            currentColor = '#' + innerDivId;
+            $(".notify").toggleClass("active");
+            $("#notifyType").toggleClass("success");
+
+            setTimeout(function () {
+                $(".notify").removeClass("active");
+                $("#notifyType").removeClass("success");
+            }, 2000);
+        });
+
+    });
 
 </script>
 

@@ -23,8 +23,8 @@ var db = admin.database();
 var ref = db.ref("/");
 var currentGirdStatus;
 // print all the data from the database
-ref.once("value", function(snapshot) {
-    currentGirdStatus = snapshot.val();
+ref.once("value", function (snapshot) {
+  currentGirdStatus = snapshot.val();
 });
 
 
@@ -50,10 +50,15 @@ io.on('connection', (socket) => {
   });
 
 
-  socket.on('gridStatus', (grid) => {
-    currentGirdStatus = grid;
-    socket.broadcast.emit('newGrid', grid);
-    ref.set(grid);
+  socket.on('gridStatus', (data) => {
+    currentGirdStatus = data.wholeGrid;
+    socket.broadcast.emit('newGrid', {
+      x: data.x,
+      y: data.y,
+      color: data.color
+    });
+
+    ref.set(currentGirdStatus);
   });
 
 });
