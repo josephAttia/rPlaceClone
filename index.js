@@ -1,4 +1,5 @@
 var admin = require("firebase-admin");
+const slowDown = require("express-slow-down");
 
 var currentGirdStatus;
 
@@ -8,6 +9,16 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
+
+
+app.enable("trust proxy"); 
+const speedLimiter = slowDown({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  delayAfter: 150, // allow 100 requests per 15 minutes, then...
+  delayMs: 500 // begin adding 500ms of delay per request above 100:
+});
+
+app.use(speedLimiter);
 
 
 var path = require('path');
