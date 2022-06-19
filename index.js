@@ -1,5 +1,17 @@
 var admin = require("firebase-admin");
 
+var currentGirdStatus;
+
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
+
+var path = require('path');
+
 var serviceAccount = {
   "type": "service_account",
   "project_id": "rplaceclone",
@@ -13,7 +25,7 @@ var serviceAccount = {
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-dxpmc%40rplaceclone.iam.gserviceaccount.com"
 }
 
-
+// Initialize the app and connecting with the firebase database
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://rplaceclone-default-rtdb.firebaseio.com"
@@ -21,30 +33,31 @@ admin.initializeApp({
 
 var db = admin.database();
 var ref = db.ref("/");
-var currentGirdStatus;
-// print all the data from the database
+
+
+//getting the database values and storing them the currentGridStatus 
 ref.once("value", function (snapshot) {
   currentGirdStatus = snapshot.val();
 });
 
+//this is so we can use external js and css files
+app.use(express.static(path.join(__dirname, '/')));
 
-const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
-
+//serve the main html file
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/templates/place.html');
 });
 
+var timeleft = 10;
+//on the user connected
 io.on('connection', (socket) => {
-
+  console.log('a user connected');
+  //serve rhe grid status from the firebase to the newly joined user (only called once on page load on the client side)
   socket.on('userJoined', () => {
     socket.emit('serveGrid', currentGirdStatus);
   });
 
+  //on the user disconnected then just print it out
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
@@ -52,16 +65,35 @@ io.on('connection', (socket) => {
 
   socket.on('gridStatus', (data) => {
     currentGirdStatus = data.wholeGrid;
-    socket.broadcast.emit('newGrid', {
+    socket.broadcast.emit('newPixel', {
       x: data.x,
       y: data.y,
       color: data.color
     });
-
     ref.set(currentGirdStatus);
   });
 
+  socket.on('decrementTime', () => {
+    decrementTime();
+  });
+  
+  function decrementTime() {
+    timeleft -= 1;
+  }
+  
+  socket.on('resetTimer', () => {
+    timeleft = 10;
+  });
+  
+  
+  socket.on('checkTimerValue', () => {
+    socket.emit('timerValue', timeleft);
+  });
+  
+  
+  
 });
+
 
 server.listen(process.env.PORT || 5000, () => {
   console.log('listening on *:3000');

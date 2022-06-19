@@ -1,0 +1,123 @@
+* {
+    overflow-x: hidden;
+}
+
+h1 {
+    text-align: center;
+    animation:text-shadow-drop-center .6s both;
+    color: #fff;
+}
+
+@keyframes text-shadow-drop-center{0%{text-shadow:0 0 0 transparent}100%{text-shadow:0 0 10px rgba(0,0,0,1)}}
+
+h4{
+    text-align: center;
+}
+
+body{
+    /* background: url("bg.jpg") no-repeat center center fixed;  
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover; */
+}
+
+canvas {
+    /* center the canvas horizaontally*/
+    margin: 0 auto;
+    display: block;
+
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+
+    /* add a very large shadow */
+    -webkit-box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
+
+}
+
+#sidenav {
+    height: 100%;
+    width: 160px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    padding-top: 20px;
+    overflow-y: visible;
+}
+
+#sidenav a {
+    margin-left: 50px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+}
+
+#sidenav a:hover {
+    color: #f1f1f1;
+}
+
+#success {
+    background: #03a679;
+    color: #f0f0f0;
+}
+
+
+
+.notify {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 0;
+    box-sizing: border-box;
+    color: white;
+    text-align: center;
+    background: rgba(0, 0, 0, .6);
+    overflow: hidden;
+    box-sizing: border-box;
+    transition: height .2s;
+}
+
+#notifyType:before {
+    display: block;
+    margin-top: 15px;
+
+}
+
+.active {
+    height: 50px;
+    overflow: hidden;
+}
+
+.success:before {
+    Content: "Color Picked! Draw something!";
+}
+
+.color {
+    background: #f00;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+#colorOption {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    /* add a border */
+    border: 1px solid #fff;
+    /* add a shadow */
+    box-shadow: 10 10 10 10px #fff;
+
+}
+
+#countdown{
+   margin-left: 700px;
+   font-style: bold;
+}
