@@ -2,6 +2,8 @@
 
 Welcome to the R/Place Clone project! This project is a recreation of the popular Reddit April Fools' experiment, R/Place, where users collaboratively build and modify a canvas by placing colored pixels. This clone has been implemented using a combination of JavaScript for the frontend and Python for the backend.
 
+![pic of application](https://i.redd.it/pvrdf0kxje691.png)
+
 ## Table of Contents
 
 - [Introduction](#introduction)
