@@ -29,14 +29,11 @@ R/Place Clone provides a platform for users to collectively create and modify pi
 
 - **Responsive Design**: The frontend is designed to be responsive, ensuring a seamless experience across various devices and screen sizes.
 
-- **History and Undo**: The system keeps track of pixel changes, allowing users to undo their actions and review the history of the canvas.
-
 ## Technologies Used
 
 - **Frontend**: JavaScript, HTML, CSS, WebSocket (for real-time communication)
 - **Backend**: Python, Flask (web framework), WebSocket (for real-time communication)
-- **Database**: MongoDB (for user authentication and data storage)
-- **Deployment**: Docker, Heroku (or your preferred deployment platform)
+- **Deployment**: Heroku (or your preferred deployment platform)
 
 ## Getting Started
 
@@ -44,8 +41,8 @@ To get started with the R/Place Clone, follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/r-place-clone.git
-   cd r-place-clone
+   git clone https://github.com/josephAttia/rPlaceClone.git
+   cd rPlaceClone
    ```
 
 2. Install dependencies:
@@ -84,10 +81,8 @@ The project is structured into two main components:
 
 ## Usage
 
-1. Register an account or log in if you already have one.
-2. Start placing pixels on the canvas by selecting a color and clicking on the desired location.
-3. Collaborate with other users in real-time to create unique pixel art.
-4. Use the undo feature to revert your actions or explore the canvas's history.
+1. Start placing pixels on the canvas by selecting a color and clicking on the desired location.
+2. Collaborate with other users in real-time to create unique pixel art!
 
 ## Contributing
 
